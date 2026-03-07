@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8M: Radiografía de la Igualdad en España</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Inter', sans-serif; background-color: #FDFBF7; color: #1F2937; scroll-behavior: smooth; }
+.chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+@media (max-width: 768px) { .chart-container { height: 280px; } }
+.tab-active { border-bottom: 3px solid #8B5CF6; color: #4C1D95; font-weight: 700; }
+.tab-inactive { color: #6B7280; font-weight: 600; }
+.tab-inactive:hover { color: #8B5CF6; }
+.glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(139, 92, 246, 0.2); }
+</style>
+</head>
+<body class="antialiased selection:bg-pink-200 selection:text-pink-900">
+
+<!-- Chosen Palette: Vibrant Equality (Background: #FDFBF7, Text: #1F2937, Accents: Deep Purple #4C1D95, Vibrant Violet #8B5CF6, Bright Pink #EC4899) -->
+<!-- Application Structure Plan: A continuous, scrollable infographic dashboard. It begins with a strong contextual hook about the meaning of 8M. It is divided into 4 thematic pillars: 1. Economy (Interactive tabs for wage gap and part-time work), 2. Time & Care (Visualizing the double shift), 3. Violence (High-impact KPIs for crucial official data), and 4. Leadership & Future (Doughnut charts showing representation in tech and boards). The structure prioritizes a narrative flow from systemic economic issues to deeply personal impacts and future outlooks. -->
+<!-- Visualization & Content Choices: 1. Economy -> Goal: Compare -> Interactive Bar/Doughnut Charts (Chart.js) -> Tabs allow toggling between wage gap and part-time data without cluttering -> Chart.js (NO SVG). 2. Time/Care -> Goal: Compare -> Horizontal Bar Chart (Chart.js) -> Shows clear disparity in daily hours -> Chart.js. 3. Violence -> Goal: Inform -> Large KPI text blocks with Unicode icons -> Immediate impact -> HTML/CSS (NO SVG). 4. Leadership -> Goal: Proportions -> Doughnut Charts -> Hover for exact percentages -> Chart.js. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<nav class="sticky top-0 z-50 glass-card shadow-sm">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<div class="flex items-center space-x-2">
+<span class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-pink-500">&#9895; 8M Datos</span>
+</div>
+<div class="hidden md:flex space-x-6">
+<a href="#contexto" class="text-sm font-semibold text-gray-700 hover:text-purple-600 transition">El 8M</a>
+<a href="#economia" class="text-sm font-semibold text-gray-700 hover:text-purple-600 transition">Economía</a>
+<a href="#cuidados" class="text-sm font-semibold text-gray-700 hover:text-purple-600 transition">Cuidados</a>
+<a href="#violencia" class="text-sm font-semibold text-gray-700 hover:text-purple-600 transition">Violencia</a>
+<a href="#liderazgo" class="text-sm font-semibold text-gray-700 hover:text-purple-600 transition">Liderazgo</a>
+</div>
+</div>
+</div>
+</nav>
+
+<header class="relative pt-20 pb-24 lg:pt-32 lg:pb-40 overflow-hidden bg-gradient-to-br from-[#FDFBF7] via-purple-50 to-pink-50">
+<div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+<h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 tracking-tight mb-6">
+La Igualdad en España <br class="hidden md:block" />
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-pink-500">Más Allá de los Lemas</span>
+</h1>
+<p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+El 8 de marzo no es un día festivo; es una jornada de reivindicación. Explora los datos oficiales del INE y ministerios que demuestran por qué la lucha por la equidad sigue siendo crucial hoy en día.
+</p>
+<div class="mt-10 flex justify-center gap-4">
+<a href="#economia" class="bg-purple-700 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-purple-800 hover:-translate-y-1 transition transform duration-200">
+Ver los Datos &#8595;
+</a>
+</div>
+</div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-32">
+
+<section id="contexto" class="scroll-mt-24">
+<div class="glass-card rounded-3xl p-8 md:p-12 shadow-xl border-t-4 border-t-pink-500">
+<div class="flex flex-col md:flex-row gap-12 items-center">
+<div class="w-full md:w-1/3 text-center md:text-left">
+<div class="text-6xl mb-4 text-purple-600">&#128218;</div>
+<h2 class="text-3xl font-bold text-gray-900 mb-4">¿Por qué seguimos marchando?</h2>
+<p class="text-gray-600 leading-relaxed text-lg">
+A pesar de los avances legislativos en España, referentes a nivel global, los indicadores macroeconómicos y sociales evidencian barreras estructurales. La igualdad formal (ante la ley) aún no se ha traducido completamente en igualdad material (en la realidad diaria).
+</p>
+</div>
+<div class="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="text-2xl mb-2">&#128181;</div>
+<h3 class="font-bold text-gray-900 mb-2">Independencia Económica</h3>
+<p class="text-sm text-gray-600">Brecha salarial, pensiones inferiores y mayor precariedad laboral dificultan la emancipación y seguridad financiera.</p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="text-2xl mb-2">&#128105;&#8205;&#128103;&#8205;&#128102;</div>
+<h3 class="font-bold text-gray-900 mb-2">Penalización por Cuidados</h3>
+<p class="text-sm text-gray-600">Las excedencias y jornadas reducidas para cuidar a menores y dependientes recaen abrumadoramente sobre las mujeres.</p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="text-2xl mb-2">&#9888;&#65039;</div>
+<h3 class="font-bold text-gray-900 mb-2">Violencia Machista</h3>
+<p class="text-sm text-gray-600">La manifestación más extrema de la desigualdad sigue cobrándose vidas y limitando la libertad y seguridad diaria.</p>
+</div>
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="text-2xl mb-2">&#127942;</div>
+<h3 class="font-bold text-gray-900 mb-2">Techos de Cristal</h3>
+<p class="text-sm text-gray-600">Infrarrepresentación en las altas esferas de decisión corporativa, política y en los sectores tecnológicos de futuro.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="economia" class="scroll-mt-24">
+<div class="text-center mb-12">
+<h2 class="text-4xl font-extrabold text-gray-900 mb-4">La Realidad Económica</h2>
+<p class="text-xl text-gray-600 max-w-3xl mx-auto">
+El mercado laboral refleja profundas divergencias. Explora las diferencias en remuneración y el impacto del trabajo a tiempo parcial.
+</p>
+</div>
+
+<div class="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+<div class="flex border-b border-gray-200">
+<button id="btn-brecha" class="w-1/2 py-4 text-center tab-active transition duration-200" onclick="switchEconTab('brecha')">Brecha Salarial</button>
+<button id="btn-jornada" class="w-1/2 py-4 text-center tab-inactive transition duration-200" onclick="switchEconTab('jornada')">Jornada Parcial</button>
+</div>
+
+<div class="p-8 md:p-12">
+<div id="content-brecha" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div>
+<h3 class="text-2xl font-bold text-gray-900 mb-4">Diferencia Retributiva Anual</h3>
+<p class="text-gray-600 mb-6 text-lg">
+Según la última Encuesta Anual de Estructura Salarial (INE), el salario medio anual femenino representa un porcentaje significativamente menor al masculino. La brecha salarial se sitúa en torno al <strong>18,6%</strong>.
+</p>
+<div class="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-500">
+<p class="text-sm text-purple-900">
+<strong>No es solo cobrar menos por el mismo puesto:</strong> La brecha es un indicador complejo que incluye la segregación horizontal (mujeres en sectores peor pagados), la falta de complementos salariales y las interrupciones en la carrera profesional.
+</p>
+</div>
+</div>
+<div class="w-full">
+<div class="chart-container">
+<canvas id="chartBrecha"></canvas>
+</div>
+</div>
+</div>
+
+<div id="content-jornada" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center hidden">
+<div>
+<h3 class="text-2xl font-bold text-gray-900 mb-4">El Rostro del Trabajo a Tiempo Parcial</h3>
+<p class="text-gray-600 mb-6 text-lg">
+De todas las personas ocupadas a tiempo parcial en España, el <strong>73% son mujeres</strong>. Para una gran mayoría, esta jornada no es una elección voluntaria, sino la única opción compatible con las responsabilidades familiares.
+</p>
+<div class="bg-pink-50 p-6 rounded-xl border-l-4 border-pink-500">
+<p class="text-sm text-pink-900">
+<strong>Impacto a largo plazo:</strong> Trabajar a tiempo parcial significa menores ingresos presentes, menor capacidad de ahorro y, drásticamente, pensiones de jubilación mucho más bajas en el futuro, generando pobreza feminizada en la tercera edad.
+</p>
+</div>
+</div>
+<div class="w-full flex justify-center">
+<div class="chart-container">
+<canvas id="chartJornada"></canvas>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="cuidados" class="scroll-mt-24">
+<div class="bg-purple-900 rounded-3xl p-8 md:p-16 text-white shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 right-0 -mt-16 -mr-16 text-purple-800 opacity-20 text-9xl font-bold">&#8986;</div>
+<div class="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+<div class="lg:col-span-2">
+<h2 class="text-4xl font-extrabold mb-6">La Doble Jornada Invisible</h2>
+<p class="text-purple-100 text-lg mb-6 leading-relaxed">
+La Encuesta de Empleo del Tiempo demuestra que la corresponsabilidad en los hogares españoles es una asignatura pendiente. Las mujeres dedican diariamente casi el doble de tiempo al hogar y la familia.
+</p>
+<p class="text-purple-200 text-sm italic">
+"El tiempo es el recurso más escaso. El tiempo invertido en cuidados no remunerados es tiempo restado a la formación, el ocio, el descanso o el desarrollo profesional."
+</p>
+</div>
+<div class="lg:col-span-3 bg-white p-6 rounded-2xl shadow-inner">
+<h3 class="text-center text-gray-800 font-bold mb-4">Horas diarias dedicadas al hogar y cuidados (Media)</h3>
+<div class="chart-container" style="height: 250px;">
+<canvas id="chartCuidados"></canvas>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="violencia" class="scroll-mt-24">
+<div class="text-center mb-12">
+<h2 class="text-4xl font-extrabold text-gray-900 mb-4">Violencia de Género</h2>
+<p class="text-xl text-gray-600 max-w-3xl mx-auto">
+La estadística más dolorosa. Los datos del Ministerio de Igualdad y la Delegación del Gobierno muestran una realidad estructural que requiere un compromiso social absoluto.
+</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-white p-8 rounded-3xl shadow-sm border border-red-100 flex flex-col items-center text-center hover:shadow-md transition">
+<div class="text-5xl mb-4">&#9888;&#65039;</div>
+<div class="text-5xl font-extrabold text-red-600 mb-2">>1,200</div>
+<h3 class="font-bold text-gray-900 mb-2">Mujeres Asesinadas</h3>
+<p class="text-sm text-gray-500">Cifra oficial de víctimas mortales por violencia de género en España desde que comenzaron los registros en el año 2003.</p>
+</div>
+
+<div class="bg-white p-8 rounded-3xl shadow-sm border border-orange-100 flex flex-col items-center text-center hover:shadow-md transition">
+<div class="text-5xl mb-4">&#128222;</div>
+<div class="text-5xl font-extrabold text-orange-500 mb-2">016</div>
+<h3 class="font-bold text-gray-900 mb-2">Llamadas de Asistencia</h3>
+<p class="text-sm text-gray-500">Decenas de miles de llamadas anuales al servicio telefónico de información y asesoramiento jurídico gratuito.</p>
+</div>
+
+<div class="bg-white p-8 rounded-3xl shadow-sm border border-purple-100 flex flex-col items-center text-center hover:shadow-md transition">
+<div class="text-5xl mb-4">&#128102;</div>
+<div class="text-5xl font-extrabold text-purple-600 mb-2">Menores</div>
+<h3 class="font-bold text-gray-900 mb-2">Víctimas Vicarias</h3>
+<p class="text-sm text-gray-500">La violencia también se ejerce contra los hijos e hijas para causar el mayor dolor posible a las madres.</p>
+</div>
+</div>
+</section>
+
+<section id="liderazgo" class="scroll-mt-24">
+<div class="text-center mb-12">
+<h2 class="text-4xl font-extrabold text-gray-900 mb-4">Liderazgo y el Futuro (STEM)</h2>
+<p class="text-xl text-gray-600 max-w-3xl mx-auto">
+Para alcanzar la igualdad real, las mujeres deben tener voz en la dirección corporativa y ser creadoras en los sectores tecnológicos que diseñan las soluciones del mañana.
+</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="glass-card p-8 rounded-3xl shadow-lg border border-gray-200">
+<div class="flex items-center gap-4 mb-6">
+<div class="text-4xl text-purple-600">&#128188;</div>
+<div>
+<h3 class="text-2xl font-bold text-gray-900">Poder Corporativo</h3>
+<p class="text-sm text-gray-500">Consejos de Administración (IBEX 35)</p>
+</div>
+</div>
+<p class="text-gray-600 mb-6 h-20">
+Aunque la CNMV presiona por un 40% de presencia femenina en consejos, los puestos ejecutivos (CEOs, presidencias) siguen estando dominados por hombres. El "techo de cristal" es de hormigón en la alta dirección.
+</p>
+<div class="chart-container">
+<canvas id="chartIbex"></canvas>
+</div>
+</div>
+
+<div class="glass-card p-8 rounded-3xl shadow-lg border border-gray-200">
+<div class="flex items-center gap-4 mb-6">
+<div class="text-4xl text-pink-500">&#128187;</div>
+<div>
+<h3 class="text-2xl font-bold text-gray-900">El Sector del Futuro</h3>
+<p class="text-sm text-gray-500">Matriculaciones Universitarias STEM</p>
+</div>
+</div>
+<p class="text-gray-600 mb-6 h-20">
+Las mujeres son mayoría en la universidad, pero minoría en Ingenierías y Tecnología. Los estereotipos desde la infancia alejan a las niñas de disciplinas matemáticas y tecnológicas.
+</p>
+<div class="chart-container">
+<canvas id="chartStem"></canvas>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+
+<footer class="bg-gray-900 text-gray-400 py-12 mt-20 border-t-4 border-purple-700">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+<div class="text-3xl font-bold text-white mb-4">&#9895; 8M</div>
+<p class="mb-4 max-w-2xl text-sm">
+Infografía generada con fines divulgativos. Los datos presentados son aproximaciones representativas basadas en informes oficiales recientes del Instituto Nacional de Estadística (INE), Ministerio de Igualdad y estudios sectoriales españoles para ilustrar magnitudes estructurales.
+</p>
+<p class="text-xs text-gray-600">&copy; 2026 Visualización de Datos para la Concienciación Social.</p>
+</div>
+</footer>
+
+<script>
+function wrapLabel(label) {
+if (label.length <= 16) return label;
+const words = label.split(' ');
+let lines = [];
+let currentLine = words[0];
+for (let i = 1; i < words.length; i++) {
+if (currentLine.length + words[i].length + 1 <= 16) {
+currentLine += ' ' + words[i];
+} else {
+lines.push(currentLine);
+currentLine = words[i];
+}
+}
+lines.push(currentLine);
+return lines;
+}
+
+const customTooltip = {
+callbacks: {
+title: function(tooltipItems) {
+const item = tooltipItems[0];
+let label = item.chart.data.labels[item.dataIndex];
+if (Array.isArray(label)) {
+return label.join(' ');
+} else {
+return label;
+}
+}
+}
+};
+
+let chartBrechaInstance, chartJornadaInstance;
+
+function initCharts() {
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.color = '#4B5563';
+
+const ctxBrecha = document.getElementById('chartBrecha').getContext('2d');
+chartBrechaInstance = new Chart(ctxBrecha, {
+type: 'bar',
+data: {
+labels: [wrapLabel('Hombres Salario Medio'), wrapLabel('Mujeres Salario Medio')],
+datasets: [{
+label: 'Salario Bruto Anual (€)',
+data: [29388, 23948],
+backgroundColor: ['#1F2937', '#8B5CF6'],
+borderRadius: 8
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: { display: false },
+tooltip: customTooltip
+},
+scales: {
+y: { beginAtZero: true, grid: { color: '#F3F4F6' } },
+x: { grid: { display: false } }
+}
+}
+});
+
+const ctxJornada = document.getElementById('chartJornada').getContext('2d');
+chartJornadaInstance = new Chart(ctxJornada, {
+type: 'doughnut',
+data: {
+labels: [wrapLabel('Mujeres trabajando a tiempo parcial'), wrapLabel('Hombres trabajando a tiempo parcial')],
+datasets: [{
+data: [73, 27],
+backgroundColor: ['#EC4899', '#E5E7EB'],
+borderWidth: 2,
+borderColor: '#ffffff',
+hoverOffset: 8
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+cutout: '70%',
+plugins: {
+legend: { position: 'bottom' },
+tooltip: customTooltip
+}
+}
+});
+
+const ctxCuidados = document.getElementById('chartCuidados').getContext('2d');
+new Chart(ctxCuidados, {
+type: 'bar',
+data: {
+labels: [wrapLabel('Mujeres (Doble Jornada)'), wrapLabel('Hombres')],
+datasets: [{
+label: 'Horas Diarias',
+data: [4.3, 2.1],
+backgroundColor: ['#8B5CF6', '#9CA3AF'],
+borderRadius: 4
+}]
+},
+options: {
+indexAxis: 'y',
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: { display: false },
+tooltip: customTooltip
+},
+scales: {
+x: { beginAtZero: true, max: 6, grid: { color: '#F3F4F6' } },
+y: { grid: { display: false } }
+}
+}
+});
+
+const ctxIbex = document.getElementById('chartIbex').getContext('2d');
+new Chart(ctxIbex, {
+type: 'pie',
+data: {
+labels: [wrapLabel('Mujeres en Consejos'), wrapLabel('Hombres en Consejos')],
+datasets: [{
+data: [38, 62],
+backgroundColor: ['#8B5CF6', '#1F2937'],
+borderWidth: 2,
+borderColor: '#ffffff'
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: { position: 'bottom' },
+tooltip: customTooltip
+}
+}
+});
+
+const ctxStem = document.getElementById('chartStem').getContext('2d');
+new Chart(ctxStem, {
+type: 'doughnut',
+data: {
+labels: [wrapLabel('Alumnas Matriculadas'), wrapLabel('Alumnos Matriculados')],
+datasets: [{
+data: [26, 74],
+backgroundColor: ['#EC4899', '#1F2937'],
+borderWidth: 2,
+borderColor: '#ffffff'
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+cutout: '60%',
+plugins: {
+legend: { position: 'bottom' },
+tooltip: customTooltip
+}
+}
+});
+}
+
+function switchEconTab(tab) {
+const btnBrecha = document.getElementById('btn-brecha');
+const btnJornada = document.getElementById('btn-jornada');
+const contentBrecha = document.getElementById('content-brecha');
+const contentJornada = document.getElementById('content-jornada');
+
+if (tab === 'brecha') {
+btnBrecha.classList.add('tab-active');
+btnBrecha.classList.remove('tab-inactive');
+btnJornada.classList.add('tab-inactive');
+btnJornada.classList.remove('tab-active');
+contentBrecha.classList.remove('hidden');
+contentJornada.classList.add('hidden');
+} else {
+btnJornada.classList.add('tab-active');
+btnJornada.classList.remove('tab-inactive');
+btnBrecha.classList.add('tab-inactive');
+btnBrecha.classList.remove('tab-active');
+contentJornada.classList.remove('hidden');
+contentBrecha.classList.add('hidden');
+}
+}
+
+document.addEventListener('DOMContentLoaded', initCharts);
+</script>
+</body>
+</html>
+
