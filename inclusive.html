@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lector Inmersivo: El Cuento de Sofía</title>
+    <style>
+        /* Estilos Globales y Accesibilidad */
+        body {
+            margin: 0;
+            background-color: #f4f7f6;
+            transition: background-color 0.3s;
+        }
+
+        header {
+            width: 100%;
+            padding: 15px 0;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-audio { background-color: #27ae60; color: white; }
+        .btn-zoom { background-color: #3498db; color: white; }
+        .btn-contrast { background-color: #f1c40f; color: #333; }
+        
+        button:hover { opacity: 0.9; transform: scale(1.05); }
+
+        /* Contenedor del Cuento */
+        #content-box {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 40px;
+            background-color: #ffffff;
+            color: #333;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            line-height: 1.8;
+            font-family: 'Georgia', serif;
+            font-size: 19px;
+            transition: all 0.4s ease;
+        }
+
+        h1 { color: #2c3e50; text-align: center; font-family: 'Segoe UI', sans-serif; }
+
+        .story-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 4px solid #ecf0f1;
+        }
+
+        /* Modo de Alto Contraste para Discapacidad Visual */
+        .high-contrast {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            border: 3px solid #ffff00 !important;
+        }
+
+        .high-contrast h1, .high-contrast p, .high-contrast strong {
+            color: #ffff00 !important;
+        }
+
+        .high-contrast .story-img {
+            border-color: #ffff00;
+            filter: grayscale(100%) contrast(150%);
+        }
+
+        ::selection {
+            background: #f1c40f;
+            color: #000;
+        }
+
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 15px; }
+            #content-box { padding: 20px; margin: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><strong>LECTOR ACCESIBLE</strong></div>
+        <div class="controls">
+            <button class="btn-audio" onclick="speakSelection()">🔊 Leer Selección</button>
+            <button class="btn-zoom" onclick="changeFontSize(2)">A+</button>
+            <button class="btn-zoom" onclick="changeFontSize(-2)">A-</button>
+            <button class="btn-contrast" onclick="toggleContrast()">🌓 Contraste</button>
+        </div>
+    </header>
+
+    <main>
+        <div id="content-box">
+            <img src="https://lh3.googleusercontent.com/d/1O0Kx8GfWq7L7H-oR_xK2mP6y8Z_XWn5Z" alt="Resumen visual: Sofía, su robot Robby, el tique de compra y la garantía cumplida" class="story-img">
+
+            <h1>Sofía y el Superpoder del Tique Dorado</h1>
+            
+            <p>Había una vez una niña llamada <strong>Sofía</strong> a la que le encantaban los inventos. Para su cumpleaños, ahorró durante meses para comprar a "Robby", un robot que caminaba y lanzaba burbujas de colores.</p>
+
+            <p>A diferencia de otros niños, Sofía tenía un secreto: su abuela le había enseñado que ser un consumidor responsable es como tener un escudo mágico. Por eso, al salir de la tienda, dobló con cuidado el papelito que le dio el vendedor y lo guardó en una caja especial que ella llamaba <strong>"El Cofre de las Garantías"</strong>.</p>
+            
+            <p>—¿Para qué guardas ese papel tan aburrido? —le preguntó su amigo Luis.</p>
+            
+            <p>—Este papel se llama <strong>tique de compra</strong> —respondió Sofía con seguridad—. Es mi prueba de que el juguete es mío y la promesa del fabricante de que debe funcionar perfectamente. Si Robby se estropea por un fallo de fábrica, este papel me protege.</p>
+            
+            <p>Dos semanas después, ocurrió lo inesperado: Robby dejó de caminar y sus luces se apagaron, a pesar de tener pilas nuevas. Luis estaba triste: "¡Vaya, ahora no es más que un trozo de plástico!". Pero Sofía no se preocupó. Fue a su cuarto, abrió el cofre y sacó su tique intacto.</p>
+            
+            <p>Al llegar a la tienda, mostró el tique al encargado. Gracias a que conocía sus <strong>derechos como consumidora</strong>, explicó con calma que el producto estaba en periodo de garantía. El vendedor, al ver el comprobante, le pidió disculpas y le entregó un Robby nuevo que funcionaba de maravilla.</p>
+            
+            <p>Desde ese día, todos en el barrio aprendieron la lección: no importa lo grande o pequeño que sea el juguete, <strong>el tique de compra es el mejor amigo de un niño precavido.</strong></p>
+        </div>
+    </main>
+
+    <script>
+        let currentFontSize = 19;
+        const contentBox = document.getElementById('content-box');
+
+        // Función para leer el texto seleccionado (TTS)
+        function speakSelection() {
+            const selection = window.getSelection().toString();
+            
+            if (selection.trim().length > 0) {
+                window.speechSynthesis.cancel(); // Detiene lecturas anteriores
+                
+                const utterance = new SpeechSynthesisUtterance(selection);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9; // Velocidad pausada para mejor comprensión
+                
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("💡 Tip: Primero resalta con el ratón el texto del cuento que quieres escuchar.");
+            }
+        }
+
+        // Ajuste de tamaño de fuente
+        function changeFontSize(delta) {
+            currentFontSize += delta;
+            if (currentFontSize < 14) currentFontSize = 14;
+            if (currentFontSize > 40) currentFontSize = 40;
+            contentBox.style.fontSize = currentFontSize + 'px';
+        }
+
+        // Alternar modo de alto contraste
+        function toggleContrast() {
+            contentBox.classList.toggle('high-contrast');
+            document.body.classList.toggle('high-contrast-body');
+        }
+    </script>
+
+</body>
+</html>
