@@ -1,0 +1,277 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Pause, RotateCcw, CheckCircle2, AlertCircle, Award } from 'lucide-react';
+
+const App = () => {
+  const [player, setPlayer] = useState(null);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [score, setScore] = useState(0);
+  const [answeredCount, setAnsweredCount] = useState(0);
+  const [showResult, setShowResult] = useState(null); // { correct: boolean, message: string }
+  
+  const timerRef = useRef(null);
+
+  const questions = [
+    {
+      id: 1,
+      time: 9, // 0:09
+      text: "¿Qué organismo o normativa se encarga de proteger y promover los derechos de los consumidores?",
+      options: [
+        "El Código de Comercio Internacional",
+        "La Ley Federal de Protección al Consumidor",
+        "El Reglamento de Libre Competencia",
+        "La Asociación Nacional de Comerciantes"
+      ],
+      correct: 1
+    },
+    {
+      id: 2,
+      time: 54, // 0:54
+      text: "El derecho a la información exige que las empresas brinden datos sobre sus productos de forma:",
+      options: [
+        "Breve, técnica y costosa",
+        "Únicamente a través de redes sociales",
+        "Oportuna, completa, clara y veraz",
+        "Opcional, dependiendo de la empresa"
+      ],
+      correct: 2
+    },
+    {
+      id: 3,
+      time: 100, // 1:40 -> 100 seg
+      text: "Si un producto es de mala calidad, ¿cuál es la bonificación mínima exigible?",
+      options: ["10%", "15%", "20%", "50%"],
+      correct: 2
+    },
+    {
+      id: 4,
+      time: 122, // 2:02 -> 122 seg
+      text: "¿Qué implica el 'Derecho a elegir'?",
+      options: [
+        "Entrar a tiendas sin comprar",
+        "Que nadie puede condicionar o presionar tu compra",
+        "Fijar el precio de los productos",
+        "Exigir anticipos sin contrato"
+      ],
+      correct: 1
+    },
+    {
+      id: 5,
+      time: 156, // 2:36 -> 156 seg
+      text: "¿Qué deben incluir obligatoriamente los instructivos de seguridad?",
+      options: [
+        "Historia de la empresa",
+        "Publicidad de otros productos",
+        "Advertencias necesarias y uso adecuado",
+        "Precio sugerido al público"
+      ],
+      correct: 2
+    },
+    {
+      id: 6,
+      time: 180, // 3:00 -> 180 seg
+      text: "El derecho a no ser discriminado prohíbe el maltrato por:",
+      options: [
+        "Género, raza o religión",
+        "Condición económica o nacionalidad",
+        "Orientación sexual o discapacidad",
+        "Todas las anteriores"
+      ],
+      correct: 3
+    }
+  ];
+
+  useEffect(() => {
+    // Cargar API de YouTube
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        initPlayer();
+      };
+    } else {
+      initPlayer();
+    }
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  const initPlayer = () => {
+    new window.YT.Player('player', {
+      videoId: 'Ws8y8cgXo6k',
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        modestbranding: 1,
+        rel: 0
+      },
+      events: {
+        onReady: (event) => setPlayer(event.target),
+        onStateChange: (event) => {
+          if (event.data === window.YT.PlayerState.PLAYING) {
+            setIsPlaying(true);
+            startTracking(event.target);
+          } else {
+            setIsPlaying(false);
+            if (timerRef.current) clearInterval(timerRef.current);
+          }
+        }
+      }
+    });
+  };
+
+  const startTracking = (p) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      const currentTime = Math.floor(p.getCurrentTime());
+      const questionFound = questions.find(q => q.time === currentTime && !q.answered);
+      
+      if (questionFound) {
+        p.pauseVideo();
+        setCurrentQuestion(questionFound);
+        clearInterval(timerRef.current);
+      }
+    }, 1000);
+  };
+
+  const togglePlay = () => {
+    if (!player) return;
+    if (isPlaying) {
+      player.pauseVideo();
+    } else {
+      player.playVideo();
+    }
+  };
+
+  const restartVideo = () => {
+    if (!player) return;
+    player.seekTo(0);
+    player.playVideo();
+    // Resetear preguntas para permitir re-hacer el test
+    questions.forEach(q => q.answered = false);
+    setScore(0);
+    setAnsweredCount(0);
+    setCurrentQuestion(null);
+  };
+
+  const handleAnswer = (index) => {
+    const isCorrect = index === currentQuestion.correct;
+    if (isCorrect) setScore(s => s + 1);
+    
+    setAnsweredCount(a => a + 1);
+    currentQuestion.answered = true;
+    setShowResult({
+      correct: isCorrect,
+      message: isCorrect ? "¡Correcto!" : `Incorrecto. La respuesta era: ${currentQuestion.options[currentQuestion.correct]}`
+    });
+
+    setTimeout(() => {
+      setShowResult(null);
+      setCurrentQuestion(null);
+      player.playVideo();
+    }, 2500);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-900">
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-indigo-700 mb-2">Video-Test Interactivo</h1>
+          <p className="text-slate-600">Aprende sobre tus derechos como consumidor mientras ves el video.</p>
+        </header>
+
+        <div className="grid grid-cols-1 gap-8">
+          {/* Video Container */}
+          <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl aspect-video group">
+            <div id="player" className="w-full h-full"></div>
+            
+            {/* Overlay for Question */}
+            {currentQuestion && (
+              <div className="absolute inset-0 bg-indigo-900/95 flex items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+                {!showResult ? (
+                  <div className="w-full max-w-lg">
+                    <h2 className="text-xl font-bold text-white mb-6 leading-tight">
+                      {currentQuestion.text}
+                    </h2>
+                    <div className="grid grid-cols-1 gap-3">
+                      {currentQuestion.options.map((opt, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleAnswer(idx)}
+                          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white text-left px-4 py-3 rounded-xl transition-all active:scale-95"
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center animate-bounce">
+                    {showResult.correct ? (
+                      <CheckCircle2 className="w-20 h-20 text-emerald-400 mx-auto mb-4" />
+                    ) : (
+                      <AlertCircle className="w-20 h-20 text-rose-400 mx-auto mb-4" />
+                    )}
+                    <p className="text-2xl font-bold text-white">{showResult.message}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Controls & Stats */}
+          <div className="bg-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-200">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={togglePlay}
+                disabled={!!currentQuestion}
+                className={`p-4 rounded-full transition-all ${isPlaying ? 'bg-slate-100 text-slate-700' : 'bg-indigo-600 text-white hover:bg-indigo-700'} disabled:opacity-50 shadow-lg`}
+              >
+                {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
+              </button>
+              <button 
+                onClick={restartVideo}
+                className="p-4 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all shadow-md"
+              >
+                <RotateCcw size={24} />
+              </button>
+            </div>
+
+            <div className="flex gap-8 items-center">
+              <div className="text-center">
+                <p className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Progreso</p>
+                <p className="text-xl font-mono font-bold text-slate-700">{answeredCount}/{questions.length}</p>
+              </div>
+              <div className="h-10 w-px bg-slate-200"></div>
+              <div className="text-center">
+                <p className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Aciertos</p>
+                <div className="flex items-center gap-2">
+                  <Award className="text-amber-500 w-5 h-5" />
+                  <p className="text-xl font-mono font-bold text-slate-700">{score}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tips Section */}
+          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex gap-4 items-start">
+            <div className="bg-indigo-600 p-2 rounded-lg text-white">
+              <AlertCircle size={20} />
+            </div>
+            <div>
+              <p className="font-semibold text-indigo-900">Instrucciones</p>
+              <p className="text-sm text-indigo-700">Mira el video con atención. En momentos clave, la reproducción se detendrá y aparecerá una pregunta. ¡Suerte!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
